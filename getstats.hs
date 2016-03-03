@@ -103,7 +103,7 @@ fieldNameToType name =
     then Number
     else Text
 
--- |The stripFieldName removes an assumed initial double quote and
+-- |The stripFieldName function removes an assumed initial double quote and
 -- everything from the left paren.
 stripFieldName fieldName = drop 1 $ takeWhile (/= '(') fieldName
 
