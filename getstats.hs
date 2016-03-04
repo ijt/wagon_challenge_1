@@ -79,13 +79,16 @@ getStatsFromRows2 fieldNames fieldTypes (row:rows) statsAcc =
   getStatsFromRows2 fieldNames fieldTypes rows statsAcc2
 
 updateStats :: FieldType -> String -> Stats -> Stats
-updateStats Number cell (NumberStats { count = count, nullCount = nullCount, least = least, most = most, total = total })  = 
-  NumberStats { count = count + 1,
-                nullCount = nullCount + if isNull cell then 1 else 0,
-                least = maybe least (\num -> min least num) maybeNum,
-                most = maybe most (\num -> max most num) maybeNum,
-                total = maybe total (\num -> total + num) maybeNum }
-  where maybeNum = Read.readMaybe cell
+updateStats Number cell (stats @ NumberStats { count = count, nullCount = nullCount, least = least, most = most, total = total }) =
+  if cell == ""
+    then stats { nullCount = nullCount + 1 }
+    else let num = read cell :: Float in
+            NumberStats { count = count + 1,
+                          nullCount = nullCount,
+                          least = min least num,
+                          most = max most num,
+                          total = total + num }
+
 updateStats Text cell (TextStats { stringToCount = stringToCount }) =
   TextStats { stringToCount = Map.insertWith (+) cell 1 stringToCount }
 
