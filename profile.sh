@@ -7,6 +7,8 @@ if [ -z "$N" ]; then
   exit 1
 fi
 
+.cabal-sandbox/bin/getstats
+
 ghc -prof -fprof-auto -rtsopts getstats.hs 
 time (./generator $N | ./getstats +RTS -p > /dev/null)
 
