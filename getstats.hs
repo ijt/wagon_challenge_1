@@ -1,12 +1,12 @@
 #!/usr/bin/env runhaskell
 
 import qualified Data.Char as Char
-import qualified Data.Ord as Ord
-import qualified Data.List.Split as Split
 import qualified Data.List as List
-import qualified Text.Read as Read
+import qualified Data.List.Split as Split
 import qualified Data.Map as Map
+import qualified Data.Ord as Ord
 import qualified Data.Tuple as Tuple
+import qualified Text.Read as Read
 
 main = interact getStats
 
