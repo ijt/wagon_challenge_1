@@ -1,5 +1,6 @@
 #!/usr/bin/env runhaskell
 
+import qualified Control.Exception as Ex
 import qualified Data.Char as Char
 import qualified Data.List as List
 import qualified Data.List.Split as Split
@@ -11,15 +12,31 @@ import qualified Data.Text.Read as Read
 import qualified Data.Tuple as Tuple
 
 main = do
-  input <- Tio.getContents
-  let allLines = map unspace $ T.lines input
-      lineCount = length allLines
-      fieldNames = T.splitOn (T.pack ",") (head allLines)
-      fieldNamesStripped = map stripFieldName fieldNames
+  firstLine <- Tio.getLine
+  let fieldNames = T.splitOn (T.pack ",") firstLine
       fieldTypes = map fieldNameToType fieldNames
-      rows = map (T.splitOn (T.pack ",")) (tail allLines)
-      statsPerCol = getStatsFromRows fieldNames fieldTypes rows
-      statsDisplayed = map display statsPerCol
+      initialStats = map makeInitialStats fieldTypes
+  loop initialStats fieldNames fieldTypes
+
+loop :: [Stats] -> [T.Text] -> [FieldType] -> IO ()
+loop stats fieldNames fieldTypes = do
+  line <- Tio.getLine `Ex.catch` handleEof
+  line <- return $ unspace line
+  if line == T.empty
+    then outputStats stats fieldNames
+    else  let row = T.splitOn (T.pack ",") line
+              stats2 = zipWith3 updateStats fieldTypes row stats
+          in
+          loop stats2 fieldNames fieldTypes
+
+handleEof :: Ex.IOException -> IO T.Text
+handleEof e = do
+  return T.empty
+
+outputStats :: [Stats] -> [T.Text] -> IO ()
+outputStats stats fieldNames = do
+  let fieldNamesStripped = map stripFieldName fieldNames
+      statsDisplayed = map display stats
       statsWithNames = zipWith (\ name stats -> T.unlines [name, stats]) fieldNamesStripped statsDisplayed
   Tio.putStrLn $ T.intercalate (T.pack "\n\n") statsWithNames
 
