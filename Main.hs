@@ -74,11 +74,6 @@ display TextStats { stringToCount = stringToCount } =
         allStrings = map Tuple.fst stringToCountAsList
         stringToCountAsList = Map.toList stringToCount
 
-getStatsFromRows :: [T.Text] -> [FieldType] -> [[T.Text]] -> [Stats]
-getStatsFromRows fieldNames fieldTypes rows =
-  getStatsFromRows2 fieldNames fieldTypes rows initialStats
-  where initialStats = map makeInitialStats fieldTypes
-
 makeInitialStats :: FieldType -> Stats
 makeInitialStats Number = NumberStats { count = 0, nullCount = 0, least = infinity, most = -infinity, total = 0 }
 makeInitialStats Text = TextStats { stringToCount = Map.empty }
@@ -90,12 +85,6 @@ data Stats =
     NumberStats { count :: Int, nullCount :: Int, least :: Double, most :: Double, total :: Double }
   | TextStats { stringToCount :: Map.Map T.Text Int }
   deriving Show
-
-getStatsFromRows2 :: [T.Text] -> [FieldType] -> [[T.Text]] -> [Stats] -> [Stats]
-getStatsFromRows2 _ _ [] statsAcc = statsAcc
-getStatsFromRows2 fieldNames fieldTypes (row:rows) statsAcc =
-  let statsAcc2 = zipWith3 updateStats fieldTypes row statsAcc in
-  getStatsFromRows2 fieldNames fieldTypes rows statsAcc2
 
 updateStats :: FieldType -> T.Text -> Stats -> Stats
 updateStats Number cell (stats @ NumberStats { count = count, nullCount = nullCount, least = least, most = most, total = total }) =
