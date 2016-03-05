@@ -89,7 +89,8 @@ data Stats =
 updateStats :: FieldType -> T.Text -> Stats -> Stats
 updateStats Number cell (stats @ NumberStats { count = count, nullCount = nullCount, least = least, most = most, total = total }) =
   if isNull cell
-    then stats { nullCount = nullCount + 1 }
+    then stats { count = count + 1,
+                 nullCount = nullCount + 1 }
     else
       case Read.double cell of
         Left _ -> error ("Failed to read supposed number " ++ T.unpack cell)
