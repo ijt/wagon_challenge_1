@@ -105,11 +105,11 @@ updateStats Number cell (stats @ NumberStats { count = count, nullCount = nullCo
       case Read.double cell of
         Left _ -> error ("Failed to read supposed number " ++ T.unpack cell)
         Right (num, _) ->
-            NumberStats { count = count + 1,
-                          nullCount = nullCount,
-                          least = min least num,
-                          most = max most num,
-                          total = total + num }
+            stats { count = count + 1,
+                    nullCount = nullCount,
+                    least = min least num,
+                    most = max most num,
+                    total = total + num }
 
 updateStats Text cell (TextStats { stringToCount = stringToCount }) =
   TextStats { stringToCount = Map.insertWith (+) cell 1 stringToCount }
