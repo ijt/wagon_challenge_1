@@ -30,7 +30,7 @@ executable getstats
     -threaded
     -fprof-auto
     -prof
-    "-with-rtsopts=-N -p"
+    "-with-rtsopts=-N -p -h"
 
   default-language:    Haskell2010
 
