@@ -1,7 +1,7 @@
 Welcome to Wagon Challenge1!
 ============================
 
-Here's how to run it:
+The included program is called getstats. To compile it, run
 
     $ cabal sandbox init
     $ cabal install -j
